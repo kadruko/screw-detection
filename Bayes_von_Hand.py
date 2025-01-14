@@ -1,8 +1,11 @@
 import csv
-import matplotlib.pyplot as plt
 from math import exp, pi, sqrt
-from sklearn.metrics import (accuracy_score, precision_score, 
-recall_score, f1_score, confusion_matrix, ConfusionMatrixDisplay)
+
+import matplotlib.pyplot as plt
+from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score,
+                             confusion_matrix, f1_score, precision_score,
+                             recall_score)
+
 
 # Funktion zum Laden der CSV-Datei
 def load_csv(file_path, delimiter=',', has_headers=True):
@@ -17,10 +20,13 @@ def load_csv(file_path, delimiter=',', has_headers=True):
 
 # Konvertiere Labels zu numerischen Werten
 def encode_labels(dataset):
-    label_mapping = {label: idx for idx, label in enumerate(set(row[0] for row in dataset))}
+    return {label: idx for idx, label in enumerate(set(row[0] for row in dataset))}
+
+# Apply label mapping
+def apply_label_mapping(dataset, label_mapping):
     for row in dataset:
         row[0] = label_mapping[row[0]]
-    return dataset, label_mapping
+    return dataset
 
 # Konvertiere Merkmalswerte zu float
 def convert_features_to_float(dataset):
@@ -28,13 +34,6 @@ def convert_features_to_float(dataset):
         for i in range(1, len(row)):  # Überspringe die Label-Spalte
             row[i] = float(row[i].replace('.', '.'))  # Konvertiere ',' zu '.' für Dezimalzahlen
     return dataset
-
-# Dataset aufteilen in Training und Test
-def split_dataset(dataset, split_ratio):
-    train_size = int(len(dataset) * split_ratio)
-    train_set = dataset[:train_size]
-    test_set = dataset[train_size:]
-    return train_set, test_set
 
 # Trenne das Dataset nach Klassen
 def separate_by_class(dataset):
@@ -107,23 +106,27 @@ def calculate_metrics(true_labels, predicted_labels):
     return accuracy, precision, recall, f1, confusion
 
 # Hauptfunktion für Training und Test
-def train_naive_bayes(file_path, split_ratio, delimiter=','):
+def naive_bayes():
     # Lade und verarbeite die Daten
-    dataset = load_csv(file_path, delimiter=delimiter)
-    dataset, label_mapping = encode_labels(dataset)
-    dataset = convert_features_to_float(dataset)
+    train_data = load_csv('cleaned_train.csv', delimiter=',')
+    train_data = convert_features_to_float(train_data)
+    
+    valid_data = load_csv('cleaned_valid.csv', delimiter=',')
+    valid_data = convert_features_to_float(valid_data)
 
-    # Dataset splitten
-    training_set, testing_set = split_dataset(dataset, split_ratio)
+    label_mapping = encode_labels(train_data)
+    
+    train_data = apply_label_mapping(train_data, label_mapping)
+    valid_data = apply_label_mapping(valid_data, label_mapping)
 
     # Zusammenfassen der Trainingsdaten
-    summaries = summarize_by_class(training_set)
+    summaries = summarize_by_class(train_data)
 
     # Vorhersagen
-    predictions = get_predictions(summaries, testing_set)
+    predictions = get_predictions(summaries, valid_data)
 
     # Labels extrahieren
-    true_labels = [row[0] for row in testing_set]
+    true_labels = [row[0] for row in valid_data]
 
     # Metriken berechnen
     accuracy, precision, recall, f1, confusion = calculate_metrics(true_labels, predictions)
@@ -156,10 +159,8 @@ def train_naive_bayes(file_path, split_ratio, delimiter=','):
             f.write(f"{key}: {value:.4f}\n")
 
     print("Modell und Metriken erfolgreich gespeichert.")
-# Beispielnutzung
-file_path = r'C:\Daten_JD\HKA\VDKI\projekt\Daten_neu\train.csv'  # Anpassen
 
-split_ratio = 0.8
-train_naive_bayes(file_path, split_ratio)
+# Beispielnutzung
+naive_bayes()
 
 
