@@ -6,9 +6,9 @@ from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score,
                              recall_score)
 
 # CSV-Dateien laden
-train_data = pd.read_csv(r'C:\Daten_JD\HKA\VDKI\projekt\Versuch_Knn\train.csv')
+train_data = pd.read_csv(r'train.csv')
 
-test_data = pd.read_csv(r'C:\Daten_JD\HKA\VDKI\projekt\Versuch_Knn\test.csv')
+test_data = pd.read_csv(r'valid.csv')
 
 # Labels und Features extrahieren
 X_train, y_train = train_data.iloc[:, 1:], train_data.iloc[:, 0]
