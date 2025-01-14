@@ -15,3 +15,13 @@ duplicates = data.duplicated()
 
 # Print the number of duplicates
 print(f"Number of duplicates: {duplicates.sum()}")
+
+# Drop duplicates from data
+train_data = train_data[~duplicates]
+valid_data = valid_data[~duplicates]
+test_data = test_data[~duplicates]
+
+# Save the cleaned data
+train_data.to_csv('cleaned_train.csv', index=False)
+valid_data.to_csv('cleaned_valid.csv', index=False)
+test_data.to_csv('cleaned_test.csv', index=False)

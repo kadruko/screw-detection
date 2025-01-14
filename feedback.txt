@@ -1,10 +1,12 @@
+- Den Datensatz aufräumen
+    - Trainingsdaten 75%: Zum Training
+    - Validierungsdaten 20%: Zum Berechnen der Metriken
+    - Testdaten 5%: Zum manuellen Testen / menschliche Evaluation
+    - Duplikate (155 Stück) entfernen: Das kann die Ergebnisse immens beeinträchtigen / verbessern
+
 - In allen Programmen den gleichen Datensatz verwenden
-    - Trainingsdaten 75%
-    - Validierungsdaten 20%
-    - Testdaten 5%
-    - Keine Kreuzvalidierung, da diese komplex zu implementieren ist und immer anderen Daten-Split erzeugt
+- Keine Kreuzvalidierung, da diese komplex zu implementieren ist und immer anderen Daten-Split erzeugt
 
 - Alle Ansätze müssen die gleichen Validierungen machen
     - Gleiche Methoden um Metriken zu berechnen
     - Validierungsdaten verwenden um Metriken zu berechnen
-    - Keine Kreuzvalidierung

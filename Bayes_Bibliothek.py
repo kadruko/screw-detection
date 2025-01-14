@@ -1,14 +1,13 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import sklearn
 from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score,
                              confusion_matrix, f1_score, precision_score,
                              recall_score)
 
 # CSV-Dateien laden
-train_data = pd.read_csv(r'train.csv')
+train_data = pd.read_csv(r'cleaned_train.csv')
 
-valid_data = pd.read_csv(r'valid.csv')
+valid_data = pd.read_csv(r'cleaned_valid.csv')
 
 # Labels und Features extrahieren
 X_train, y_train = train_data.iloc[:, 1:], train_data.iloc[:, 0]
@@ -26,9 +25,6 @@ from sklearn.naive_bayes import GaussianNB  # importiere Bayes Klassifikator
 
 bayes_clf = GaussianNB() # zuweisen zu Klassifikatorvariable/Objekt
 bayes_clf.fit(X_train,y_train) # Klassifikator anwenden auf Trainingsdaten
-
-import numpy as np
-from sklearn.model_selection import RandomizedSearchCV
 
 # Vorhersagen für die Testdaten
 y_pred = bayes_clf.predict(X_valid)

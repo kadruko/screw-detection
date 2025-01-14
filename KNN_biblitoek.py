@@ -1,24 +1,21 @@
-import pandas as pd
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import (
-    confusion_matrix, ConfusionMatrixDisplay,
-    accuracy_score, precision_score, recall_score, f1_score)
 import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score,
+                             confusion_matrix, f1_score, precision_score,
+                             recall_score)
+from sklearn.neighbors import KNeighborsClassifier
 
 # CSV-Dateien laden
-train_data = pd.read_csv(r'C:\Daten_JD\HKA\VDKI\projekt\Daten_neu\train.csv')
-valid_data = pd.read_csv(r'C:\Daten_JD\HKA\VDKI\projekt\Daten_neu\valid.csv')
-test_data = pd.read_csv(r'C:\Daten_JD\HKA\VDKI\projekt\Daten_neu\test.csv')
+train_data = pd.read_csv(r'train.csv')
+valid_data = pd.read_csv(r'valid.csv')
 
 # Labels und Features extrahieren
 X_train, y_train = train_data.iloc[:, 1:], train_data.iloc[:, 0]
 X_valid, y_valid = valid_data.iloc[:, 1:], valid_data.iloc[:, 0]
-X_test, y_test = test_data.iloc[:, 1:], test_data.iloc[:, 0]
 
 # Labels in numerische Werte umwandeln, falls notwendig
 y_train = pd.Categorical(y_train).codes
 y_valid = pd.Categorical(y_valid).codes
-y_test = pd.Categorical(y_test).codes
 
 # Optimierung des besten k-Werts basierend auf den Validierungsdaten
 best_k = 1
@@ -39,16 +36,16 @@ knn = KNeighborsClassifier(n_neighbors=best_k)
 knn.fit(X_train, y_train)
 
 # Vorhersagen für die Testdaten
-y_pred = knn.predict(X_test)
+y_pred = knn.predict(X_valid)
 
 # Metriken berechnen
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred, average='weighted')
-recall = recall_score(y_test, y_pred, average='weighted')
-f1 = f1_score(y_test, y_pred, average='weighted')
+accuracy = accuracy_score(y_valid, y_pred)
+precision = precision_score(y_valid, y_pred, average='weighted')
+recall = recall_score(y_valid, y_pred, average='weighted')
+f1 = f1_score(y_valid, y_pred, average='weighted')
 
 # Confusion-Matrix erstellen und anzeigen
-cm = confusion_matrix(y_test, y_pred)
+cm = confusion_matrix(y_valid, y_pred)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 disp.plot(cmap=plt.cm.Blues)
 plt.title("Confusion Matrix")
