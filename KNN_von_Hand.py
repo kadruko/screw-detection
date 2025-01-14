@@ -1,9 +1,11 @@
-from random import randrange
 from csv import reader
 from math import sqrt
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.metrics import (accuracy_score, confusion_matrix, f1_score,
+                             precision_score, recall_score)
+
 
 # CSV einlesen mit flexiblem Delimiter
 # Erste Zeile (Header) wird übersprungen
@@ -26,17 +28,6 @@ def laden_csv(filename):
     if not dataset:
         raise ValueError("Keine gültige CSV gefunden oder leerer Inhalt.")
     return dataset
-
-# Datenset in 3 Teile für die Kreuzvalidierung aufteilen
-def split_dataset(dataset):
-    dataset_copy = list(dataset)
-    split = [[], [], []]
-    while dataset_copy:
-        for part in split:
-            if dataset_copy:
-                index = randrange(len(dataset_copy))
-                part.append(dataset_copy.pop(index))
-    return split
 
 # Prozente berechnen
 def accuracy_metric(actual, predicted):
@@ -78,41 +69,22 @@ def kNN(train, test, num_neighbors):
         predictions.append(output)
     return predictions
 
-# Kreuzvalidierung
 
-def Genauigkeit(dataset, algorithm, num_neighbors):
-    splits = split_dataset(dataset)
-    scores = []
-    all_actual = []
-    all_predicted = []
-    for i in range(len(splits)):
-        test_set = splits[i]
-        train_set = [item for s in splits if s != splits[i] for item in s]
-        predicted = algorithm(train_set, test_set, num_neighbors)
-        actual = [row[0] for row in test_set]
-        scores.append(accuracy_metric(actual, predicted))
-        all_actual.extend(actual)
-        all_predicted.extend(predicted)
-    return scores, all_actual, all_predicted
-
-
-filename = (r'C:\Daten_JD\HKA\VDKI\projekt\Versuch_Knn\train.csv')
-dataset = laden_csv(filename)
+train_data = laden_csv('cleaned_train.csv')
+valid_data = laden_csv('cleaned_valid.csv')
 
 # Daten prüfen und Labels (erste Spalte) als String belassen
 num_neighbors = 3
 
-scores, all_actual, all_predicted = Genauigkeit(dataset, kNN, num_neighbors)
-
-print('Scores: %s' % scores)
-print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+predicted = kNN(train_data, valid_data, num_neighbors)
+actual = [row[0] for row in valid_data]
 
 # Zusätzliche Metriken berechnen
-accuracy = accuracy_score(all_actual, all_predicted)
-precision = precision_score(all_actual, all_predicted, average='weighted', zero_division=0)
-recall = recall_score(all_actual, all_predicted, average='weighted', zero_division=0)
-f1 = f1_score(all_actual, all_predicted, average='weighted', zero_division=0)
-confusion = confusion_matrix(all_actual, all_predicted)
+accuracy = accuracy_score(actual, predicted)
+precision = precision_score(actual, predicted, average='weighted', zero_division=0)
+recall = recall_score(actual, predicted, average='weighted', zero_division=0)
+f1 = f1_score(actual, predicted, average='weighted', zero_division=0)
+confusion = confusion_matrix(actual, predicted)
 
 print("Zusätzliche Metriken:")
 print("Accuracy: %.3f" % accuracy)
