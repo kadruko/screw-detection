@@ -10,3 +10,8 @@
 - Alle Ansätze müssen die gleichen Validierungen machen
     - Gleiche Methoden um Metriken zu berechnen
     - Validierungsdaten verwenden um Metriken zu berechnen
+
+
+- Um die Performance von Bayes zu verbessern,
+müssen die Features anders gewählt werden, aber es kann gut sein,
+dass sich das Verfahren für diese Daten einfach nicht gut eignet.
